@@ -5,6 +5,8 @@ namespace MoonGames.Game.FrogJump
     public class GameControllerMono : MonoBehaviour
     {
         public Camera mainCamera;
+        private SelectableMono firstSelection;
+        private SelectableMono secondSelection;
 
         private void Update()
         {
@@ -28,8 +30,23 @@ namespace MoonGames.Game.FrogJump
             {
                 return;
             }
-
+            
             selectable.SelectOrUnselect();
+
+            if (!selectable.isSelected)
+            {
+                return;
+            }
+            
+            if (firstSelection == null)
+            {
+                firstSelection = selectable;
+            }
+            else if (firstSelection != null && secondSelection != null)
+            {
+                secondSelection = selectable;
+                //TODO 
+            }
         }
     }
 }
