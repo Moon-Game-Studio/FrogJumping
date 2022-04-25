@@ -1,7 +1,7 @@
 ﻿using cakeslice;
 using UnityEngine;
 
-namespace MoonGames.Game.FrogJump
+namespace MoonGames.Game.FrogJump.Monos
 {
     public class SelectableMono : MonoBehaviour
     {

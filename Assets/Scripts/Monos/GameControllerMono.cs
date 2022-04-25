@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿using MoonGames.Game.FrogJump.Models;
+using UnityEngine;
 
-namespace MoonGames.Game.FrogJump
+namespace MoonGames.Game.FrogJump.Monos
 {
     public class GameControllerMono : MonoBehaviour
     {
         public Camera mainCamera;
-        private SelectableMono firstSelection;
-        private SelectableMono secondSelection;
+        private Map map;
+
+        private void Start()
+        {
+            map = new Map(5);
+        }
 
         private void Update()
         {
@@ -31,22 +36,7 @@ namespace MoonGames.Game.FrogJump
                 return;
             }
             
-            selectable.SelectOrUnselect();
-
-            if (!selectable.isSelected)
-            {
-                return;
-            }
             
-            if (firstSelection == null)
-            {
-                firstSelection = selectable;
-            }
-            else if (firstSelection != null && secondSelection != null)
-            {
-                secondSelection = selectable;
-                //TODO 
-            }
         }
     }
 }
