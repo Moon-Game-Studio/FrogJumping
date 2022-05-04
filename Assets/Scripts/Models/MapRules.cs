@@ -4,12 +4,12 @@ namespace MoonGames.Game.FrogJump.Models
 {
     public static class MapRules
     {
-        public static void Validate(MapColumn from, MapColumn to)
+        public static void Validate(ColumnMono from, ColumnMono to)
         {
             CanMerge(from, to);
         }
 
-        private static void CanMerge(MapColumn from, MapColumn to)
+        private static void CanMerge(ColumnMono from, ColumnMono to)
         {
             if (IsCurrentColumnEmpty(from))
             {
@@ -27,19 +27,19 @@ namespace MoonGames.Game.FrogJump.Models
             }
         }
 
-        private static bool IsThereEnoughFrogsToJump(MapColumn from, MapColumn to)
+        private static bool IsThereEnoughFrogsToJump(ColumnMono from, ColumnMono to)
         {
             return Math.Abs(from.Index - to.Index) == from.Items.Count;
         }
 
-        private static bool IsCurrentColumnEmpty(MapColumn column)
+        private static bool IsCurrentColumnEmpty(ColumnMono columnMono)
         {
-            return column.Items.Count == 0;
+            return columnMono.Items.Count == 0;
         }
 
-        private static bool IsDestinationColumnEmpty(MapColumn column)
+        private static bool IsDestinationColumnEmpty(ColumnMono columnMono)
         {
-            return column.Items.Count == 0;
+            return columnMono.Items.Count == 0;
         }
     }
 }

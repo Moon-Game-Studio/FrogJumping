@@ -1,36 +1,49 @@
+using System.Collections;
 using UnityEngine;
 
 namespace MoonGames.Game.FrogJump.Monos
 {
-    public class JumpingMono : MonoBehaviour
+    public class JumpingRoutine
     {
+        private readonly GameObject jumper;
+        private readonly Vector3 startPoint;
+        private readonly Vector3 destionationPoint;
+
         public float height = 1f;
         public float jumpSpeed = 5f;
 
-        public GameObject currentPoint;
-        public GameObject nextPoint;
-
-        private void Start() { }
-
-        private void Update()
+        public JumpingRoutine(GameObject jumper, Vector3 startPoint, Vector3 destionationPoint)
         {
-            Vector3 currentPosition = currentPoint.transform.position;
-            Vector3 nextPosition = nextPoint.transform.position;
-            float currentZ = currentPosition.z;
-            float destinationZ = nextPosition.z;
-            float dist = destinationZ - currentZ;
+            this.jumper = jumper;
+            this.startPoint = startPoint;
+            this.destionationPoint = destionationPoint;
+        }
 
-            float nextZ = Mathf.MoveTowards(transform.position.z, destinationZ, jumpSpeed * Time.deltaTime);
-            float baseY = Mathf.Lerp(currentPosition.y, nextPosition.y, (nextZ - currentZ) / dist);
-            float arc = height * (nextZ - currentZ) * (nextZ - destinationZ) / (-0.25f * dist * dist);
+        public IEnumerator Jump()
+        {
+            while (Vector3.Distance(jumper.transform.position, destionationPoint) > 0.1f)
+            {
+                Transform transform = jumper.transform;
+                float currentZ = startPoint.z;
+                float destinationZ = destionationPoint.z;
+                float dist = destinationZ - currentZ;
 
-            float x0 = currentPosition.x;
-            float x1 = nextPosition.x;
-            float nextX = Mathf.MoveTowards(transform.position.x, x1, jumpSpeed * Time.deltaTime);
+                Vector3 position = transform.position;
+                float nextZ = Mathf.MoveTowards(position.z, destinationZ, jumpSpeed * Time.deltaTime);
+                float baseY = Mathf.Lerp(startPoint.y, destionationPoint.y, (nextZ - currentZ) / dist);
+                float arc = height * (nextZ - currentZ) * (nextZ - destinationZ) / (-0.25f * dist * dist);
 
-            var nPos = new Vector3(nextX, baseY + arc, nextZ);
+                float x0 = startPoint.x;
+                float x1 = destionationPoint.x;
+                float nextX = Mathf.MoveTowards(position.x, x1, jumpSpeed * Time.deltaTime);
 
-            transform.position = nPos;
+                var nPos = new Vector3(nextX, baseY + arc, nextZ);
+
+                position = nPos;
+                transform.position = position;
+                yield return new WaitForSeconds(0.01f);
+            }
+            
         }
     }
 }
