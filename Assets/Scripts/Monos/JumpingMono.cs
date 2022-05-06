@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,15 +9,17 @@ namespace MoonGames.Game.FrogJump.Monos
         private readonly GameObject jumper;
         private readonly Vector3 startPoint;
         private readonly Vector3 destionationPoint;
+        private readonly Action movementEndAction;
 
         public float height = 1f;
-        public float jumpSpeed = 5f;
+        public float jumpSpeed = 10f;
 
-        public JumpingRoutine(GameObject jumper, Vector3 startPoint, Vector3 destionationPoint)
+        public JumpingRoutine(GameObject jumper, Vector3 startPoint, Vector3 destionationPoint, Action movementEndAction)
         {
             this.jumper = jumper;
             this.startPoint = startPoint;
             this.destionationPoint = destionationPoint;
+            this.movementEndAction = movementEndAction;
         }
 
         public IEnumerator Jump()
@@ -43,7 +46,9 @@ namespace MoonGames.Game.FrogJump.Monos
                 transform.position = position;
                 yield return new WaitForSeconds(0.01f);
             }
-            
+
+            movementEndAction.Invoke();
+            yield return null;
         }
     }
 }

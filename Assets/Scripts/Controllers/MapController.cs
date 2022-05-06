@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using MoonGames.Game.FrogJump.Models;
+using MoonGames.Game.FrogJump.StaticData;
 using UnityEngine;
 
 namespace MoonGames.Game.FrogJump.Controllers
@@ -28,16 +30,31 @@ namespace MoonGames.Game.FrogJump.Controllers
             {
                 map.SelectionFrom = columnMono;
                 map.SelectionFrom.IsSelected = true;
-                Debug.Log(map.SelectionFrom);
             }
             else if (map.SelectionFrom != null && map.SelectionTo == null)
             {
                 map.SelectionTo = columnMono;
                 map.SelectionTo.IsSelected = true;
-                Debug.Log(map.SelectionFrom);
-                Debug.Log(map.SelectionTo);
                 Move();
             }
+            else
+            {
+                UnSelectColumns();
+            }
+        }
+
+        private void OnMovementAnimationEnd()
+        {
+            UnSelectColumns();
+            if (IsGameEnd())
+            {
+                StaticDatas.RestartGame();
+            }
+        }
+
+        private bool IsGameEnd()
+        {
+            return map.Columns.Any(o => o.Value.Items.Count == map.Columns.Count);
         }
 
         private void Move()
@@ -45,25 +62,29 @@ namespace MoonGames.Game.FrogJump.Controllers
             try
             {
                 MapRules.Validate(map.SelectionFrom, map.SelectionTo);
-                map.SelectionTo.MergeAndMove(map.SelectionFrom.Items, distanceBetweenFrogs);
+                map.SelectionTo.MergeAndMove(map.SelectionFrom.Items, distanceBetweenFrogs, OnMovementAnimationEnd);
                 map.SelectionFrom.Items.Clear();
             }
             catch (Exception exception)
             {
-                Debug.LogWarning(exception);
-            }
-            finally
-            {
                 UnSelectColumns();
+                Debug.LogError(exception);
             }
         }
 
         private void UnSelectColumns()
         {
-            map.SelectionFrom.IsSelected = false;
-            map.SelectionTo.IsSelected = false;
-            map.SelectionFrom = null;
-            map.SelectionTo = null;
+            if (map.SelectionFrom != null)
+            {
+                map.SelectionFrom.IsSelected = false;
+                map.SelectionFrom = null;
+            }
+
+            if (map.SelectionTo != null)
+            {
+                map.SelectionTo.IsSelected = false;
+                map.SelectionTo = null;
+            }
         }
     }
 }

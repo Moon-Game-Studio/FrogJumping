@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using MoonGames.Game.FrogJump.Monos;
@@ -9,7 +10,8 @@ namespace MoonGames.Game.FrogJump.Models
     [UsedImplicitly]
     public class ColumnMono : MonoBehaviour
     {
-        public StoneMono stone;
+        //public StoneMono stone;
+        public Light bottomLight;
         private bool isSelected;
 
         public bool IsSelected
@@ -26,22 +28,26 @@ namespace MoonGames.Game.FrogJump.Models
 
         public int Index { get; set; }
 
-        private void SetOutline(bool value)
+        private void Start()
         {
-            stone.SetOutlineValue(value);
+            bottomLight.enabled = false;
         }
 
-        public void MergeAndMove(IEnumerable<OutlinebleMono> items, float distanceBetweenFrogs)
+        private void SetOutline(bool value)
+        {
+            bottomLight.enabled = value;
+        }
+
+        public void MergeAndMove(IEnumerable<OutlinebleMono> items, float distanceBetweenFrogs, Action movementEndAction)
         {
             Vector3 position = Items.Last().gameObject.transform.position;
-            
+
             foreach (OutlinebleMono frog in items)
             {
                 frog.transform.parent = transform;
                 position = GetFrogPosition(distanceBetweenFrogs, position);
-                var routine = new JumpingRoutine(frog.gameObject, frog.transform.position, position);
+                var routine = new JumpingRoutine(frog.gameObject, frog.transform.position, position, movementEndAction);
                 StartCoroutine(routine.Jump());
-                //frog.transform.position = position;
                 Items.Add(frog);
             }
         }
